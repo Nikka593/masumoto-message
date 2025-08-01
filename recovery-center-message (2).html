@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>回復センターチームへのメッセージ</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Noto Sans JP', 'Hiragino Sans', 'メイリオ', sans-serif;
+            line-height: 1.8;
+            color: #333;
+            background: #0a0a0a;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        /* 動的な背景 */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            z-index: -3;
+        }
+        
+        /* 動く光の粒子 */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(2px 2px at 20% 30%, white, transparent),
+                radial-gradient(2px 2px at 60% 70%, white, transparent),
+                radial-gradient(1px 1px at 50% 50%, white, transparent),
+                radial-gradient(1px 1px at 80% 20%, white, transparent),
+                radial-gradient(2px 2px at 90% 60%, white, transparent);
+            background-size: 200% 200%;
+            animation: sparkle 20s linear infinite;
+            opacity: 0.3;
+            z-index: -2;
+        }
+        
+        @keyframes sparkle {
+            0% {
+                background-position: 0% 0%;
+            }
+            100% {
+                background-position: 200% 200%;
+            }
+        }
+        
+        /* 光の波紋効果 */
+        .light-wave {
+            position: fixed;
+            width: 200%;
+            height: 200%;
+            top: -50%;
+            left: -50%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 40%);
+            animation: wave 15s ease-in-out infinite;
+            z-index: -1;
+            pointer-events: none;
+        }
+        
+        .light-wave:nth-child(2) {
+            animation-delay: -5s;
+            background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 40%);
+        }
+        
+        .light-wave:nth-child(3) {
+            animation-delay: -10s;
+            background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 40%);
+        }
+        
+        @keyframes wave {
+            0%, 100% {
+                transform: rotate(0deg) scale(1);
+                opacity: 0.5;
+            }
+            50% {
+                transform: rotate(180deg) scale(1.5);
+                opacity: 1;
+            }
+        }
+        
+        .hero-section {
+            position: relative;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        
+        .hero-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(0.4);
+            z-index: -1;
+        }
+        
+        .hero-content {
+            text-align: center;
+            color: white;
+            z-index: 1;
+            animation: fadeInUp 1.5s ease-out;
+            padding: 0 20px;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        
+        .hero-subtitle {
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+        
+        .scroll-indicator {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateX(-50%) translateY(0);
+            }
+            40% {
+                transform: translateX(-50%) translateY(-20px);
+            }
+            60% {
+                transform: translateX(-50%) translateY(-10px);
+            }
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 80px 20px;
+        }
+        
+        .message-section {
+            background: white;
+            border-radius: 20px;
+            padding: 60px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+            margin-bottom: 50px;
+            transform: translateY(20px);
+            opacity: 0;
+            animation: fadeIn 1s ease-out forwards;
+        }
+        
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .greeting {
+            font-size: 2rem;
+            color: #667eea;
+            font-weight: bold;
+            margin-bottom: 30px;
+            position: relative;
+            padding-left: 20px;
+        }
+        
+        .greeting::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 5px;
+            height: 80%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 3px;
+        }
+        
+        .message-text {
+            font-size: 1.1rem;
+            margin-bottom: 25px;
+            text-align: justify;
+        }
+        
+        .highlight {
+            background: linear-gradient(transparent 60%, #ffd700 60%);
+            font-weight: bold;
+            padding: 0 3px;
+        }
+        
+        .mission-card {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 40px;
+            border-radius: 15px;
+            margin: 50px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .mission-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+        
+        @keyframes rotate {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        
+        .mission-title {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .points-section {
+            margin: 60px 0;
+        }
+        
+        .point-card {
+            background: #f8f9fa;
+            border-left: 5px solid #667eea;
+            padding: 30px;
+            margin-bottom: 30px;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .point-card:hover {
+            transform: translateX(10px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .point-number {
+            font-size: 3rem;
+            color: #667eea;
+            font-weight: bold;
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            opacity: 0.2;
+        }
+        
+        .point-title {
+            font-size: 1.5rem;
+            color: #667eea;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        
+        .point-content {
+            font-size: 1.05rem;
+            line-height: 1.8;
+        }
+        
+        .inspiration-section {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 60px;
+            border-radius: 20px;
+            text-align: center;
+            margin: 80px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .inspiration-section::after {
+            content: '✨';
+            position: absolute;
+            font-size: 100px;
+            opacity: 0.1;
+            top: -30px;
+            right: 50px;
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+        
+        .inspiration-text {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .future-vision {
+            background: url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1600&h=600&fit=crop') center/cover;
+            position: relative;
+            padding: 100px 60px;
+            border-radius: 20px;
+            margin: 60px 0;
+            color: white;
+            text-align: center;
+        }
+        
+        .future-vision::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.6);
+            border-radius: 20px;
+        }
+        
+        .future-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .future-title {
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+        }
+        
+        .future-text {
+            font-size: 1.3rem;
+            line-height: 2;
+        }
+        
+        .team-spirit {
+            background: #fff;
+            padding: 60px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+            margin-bottom: 50px;
+        }
+        
+        .team-image {
+            width: 100%;
+            max-width: 800px;
+            height: 400px;
+            object-fit: cover;
+            border-radius: 15px;
+            margin: 30px 0;
+        }
+        
+        .cta-section {
+            text-align: center;
+            padding: 80px 20px;
+            background: white;
+            border-radius: 20px;
+            margin-top: 60px;
+        }
+        
+        .cta-title {
+            font-size: 3rem;
+            color: #667eea;
+            margin-bottom: 30px;
+            font-weight: bold;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            padding: 20px 50px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.5);
+        }
+        
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .message-section {
+                padding: 30px;
+            }
+            
+            .point-card {
+                padding: 20px;
+            }
+            
+            .point-number {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- ヒーローセクション -->
+    <div class="hero-section">
+        <img src="https://images.unsplash.com/photo-1519904981063-b0cf448d479e?w=1600&h=900&fit=crop" alt="新たな挑戦への出発" class="hero-image">
+        <div class="hero-content">
+            <h1 class="hero-title">新たな挑戦への船出</h1>
+            <p class="hero-subtitle">回復センターチームの皆さんへ</p>
+            <div class="scroll-indicator">
+                <svg width="30" height="30" fill="white">
+                    <path d="M15 3 L15 20 M15 20 L10 15 M15 20 L20 15" stroke="white" stroke-width="2" fill="none"/>
+                </svg>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- メッセージセクション -->
+        <div class="message-section">
+            <h2 class="greeting">回復センターチームの皆さんへ</h2>
+            
+            <p class="message-text">
+                町田さんや中井さんからも聞いていると思いますが、昨日、１回目の加盟希望企業さん向けの視察ツアーが実施されました。既に、先行募集の申し込みをされた企業様もでてきています。
+            </p>
+            
+            <p class="message-text">
+                オーナー会後、<span class="highlight">予想以上の反響で当初５社程度の先行募集企業でスタートのつもりでいたのが５０社以上の希望が殺到する</span>ということになっています。カーブスでの信頼関係があるからこそ、ということともに、回復センター事業自体が社会性も事業性も魅力が高いということの証左だと思っています。
+            </p>
+            
+            <p class="message-text">
+                さて、ここから<span class="highlight">遂に遂に、いよいよ、いよいよ、待ちに待った回復センター事業の拡大展開のステージ</span>に入っていきます。
+            </p>
+        </div>
+
+        <!-- 感謝のメッセージ -->
+        <div class="team-spirit">
+            <h2 style="font-size: 2.5rem; color: #667eea; margin-bottom: 30px;">感謝の気持ちを込めて</h2>
+            <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&h=400&fit=crop" alt="チームワーク" class="team-image">
+            <p style="font-size: 1.3rem; margin-top: 30px;">
+                まずはここまで業態づくりをしてきたくれた皆さんに、直営店をつくってきてくれた皆さんに、改めて感謝の気持ちをお伝えしたいと思います。<br>
+                <strong style="font-size: 1.5rem; color: #f5576c;">本当にありがとう。よく頑張ってきた！！</strong>
+            </p>
+            <p style="font-size: 1.1rem; margin-top: 20px;">
+                みな現場に入り、泥まみれになって、業態と格闘し、ここまでやってきてくれました。皆さんが現場最前線でお客様に接し、自らサービス、ゲスプロ、セールス、オペレーションをやってきてくれたからこそ、地に足がついた業態ができた、本物ができた（まだまだ完成ではないが）と思っています。
+            </p>
+        </div>
+
+        <!-- ミッションカード -->
+        <div class="mission-card">
+            <h2 class="mission-title">私たちの使命</h2>
+            <p style="font-size: 1.3rem; line-height: 2;">
+                「日本中から痛み難民をなくすこと」<br>
+                「痛みがある人が自分で痛みを治し、コントロールし、<br>
+                人生を楽しめるようになってもらうこと」
+            </p>
+        </div>
+
+        <!-- 6つのポイント -->
+        <div class="points-section">
+            <h2 style="text-align: center; font-size: 2.5rem; color: #333; margin-bottom: 50px;">
+                事業展開に向けての６つの心得
+            </h2>
+            
+            <div class="point-card">
+                <div class="point-number">1</div>
+                <h3 class="point-title">常に創業者精神をもって事にあたろう</h3>
+                <div class="point-content">
+                    ここからもまだまだ様々な困難が起きるでしょう。今までの身内だけの中での話ではなく加盟店さんという外部を巻き込み事業を拡大していきますので、今までとは次元が違う問題も起きてきます。<br><br>
+                    そのときに、それがどんな問題であれ、自分が直接かかわっていないことであれ、自分の業務領域の外のことであれ、常に当事者意識をもって物事にあたってほしい。<br><br>
+                    この事業を自分が創るんだ、自分が本物にするんだ、という気概をもって、創業者精神を忘れずに全てのことに対峙しましょう。
+                </div>
+            </div>
+            
+            <div class="point-card">
+                <div class="point-number">2</div>
+                <h3 class="point-title">ぶれない使命感、信念を貫こう</h3>
+                <div class="point-content">
+                    私達が目指すのは「日本中から痛み難民をなくすこと」「痛みがある人が自分で痛みを治し、コントロールし、人生を楽しめるようになってもらうこと」<br><br>
+                    この使命に常に立ち返って、その実現のために全精力を注ごう。この使命の実現に比べれば、日常の問題など全て些末なこと、小さいこと。<br><br>
+                    そして事業を本物にできるかどうかは、使命感、信念を貫いた人が何人いたか！が決める。
+                </div>
+            </div>
+            
+            <div class="point-card">
+                <div class="point-number">3</div>
+                <h3 class="point-title">常に学び続けよう、改善革新し続けよう、科学し続けよう</h3>
+                <div class="point-content">
+                    業態や事業はどこまでいっても完成はない。より良くし続けることこそが事業を発展繁栄させる唯一の道。<br><br>
+                    だから、創業者として一人一人もチームにおいても、常に学び、科学し、改善革新をし続けよう。
+                </div>
+            </div>
+            
+            <div class="point-card">
+                <div class="point-number">4</div>
+                <h3 class="point-title">失敗を恐れずに、チャレンジをし続けよう</h3>
+                <div class="point-content">
+                    チームにとっても、個々人にとっても、新しい挑戦ばかりの日々がやってきます。<br><br>
+                    今の業務分野を続ける人もチェーンの拡大のためには領域を広げないといけません。新しい役割を担う人もまさにチャレンジの毎日になります。<br><br>
+                    どうせ挑戦するのであれば、そのチャレンジを楽しみ、チームと一人一人の成長の機会にしてほしい。
+                </div>
+            </div>
+            
+            <div class="point-card">
+                <div class="point-number">5</div>
+                <h3 class="point-title">チームのミッション達成を第一に、そして、それを自分の成長の機会にしよう</h3>
+                <div class="point-content">
+                    新しい役割にチャレンジする人、領域を広げる人、それぞれチームのミッション達成のために役割が与えられます。<br><br>
+                    それぞれの役割は、チームのミッション達成とともに一人一人の成長を考えて、町田さん、中井さんが考えてくれています。<br><br>
+                    新しいチャレンジに戸惑う人もいるかもしれません。でも、新しいチャレンジは必ず自分の将来につながると信じて、まずはチャレンジマインドで挑戦してください。
+                </div>
+            </div>
+            
+            <div class="point-card">
+                <div class="point-number">6</div>
+                <h3 class="point-title">未熟なのはお互い様、常に支えあい、切磋琢磨できるチームをつくろう</h3>
+                <div class="point-content">
+                    会社にとっても新しい事業の展開、そもそも世の中に全くなかった事業を広めるのがこれからの私達の仕事です。<br><br>
+                    町田さん、中井さん含めて、全員にとって経験がないことへの大いなるチャレンジです。<br><br>
+                    だから（今まで通り、今まで以上に）お互いに支えあってもらいたい。お互いの未熟さや弱さに寛容になって、想いや努力を信頼しあって、支えあってもらいたい。<br><br>
+                    そしてそれが甘さだけにはならないように、一人一人が真摯に努力し、切磋琢磨をしあえるそんなチームをつくってください。
+                </div>
+            </div>
+        </div>
+
+        <!-- インスピレーションセクション -->
+        <div class="inspiration-section">
+            <p class="inspiration-text">
+                さあ、いよいよ本格的な船出が始まります。<br>
+                楽しんでいきましょう。
+            </p>
+        </div>
+
+        <!-- 未来のビジョン -->
+        <div class="future-vision">
+            <div class="future-content">
+                <h2 class="future-title">10年後の未来へ</h2>
+                <p class="future-text">
+                    日本中に広がった回復センターの看板を見て、<br>
+                    「あの事業は私達が創り広げたんだ」<br>
+                    と胸を張って言える日を思い描いて！！
+                </p>
+            </div>
+        </div>
+
+        <!-- CTA セクション -->
+        <div class="cta-section">
+            <h2 class="cta-title">共に創る、新しい未来</h2>
+            <a href="#" class="cta-button">挑戦を始めよう</a>
+        </div>
+    </div>
+</body>
+</html>
